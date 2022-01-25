@@ -31,4 +31,4 @@ jobs:
             ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
             
       - name: admin-web
-        run: yarn build
+        run: yarn && yarn build
