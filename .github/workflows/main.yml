@@ -2,9 +2,8 @@ name: CI
 
 on:
   push:
-    branches:
-      - 'development'
-      - '!feature/**'
+    tags:
+      - admin-web
     
   workflow_dispatch:
 
