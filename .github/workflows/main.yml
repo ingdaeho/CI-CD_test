@@ -2,10 +2,8 @@ name: CI
 
 on:
   push:
-    branches:
-      - 'development'
-    paths:
-      - 'admin-web/**'
+    tags:
+      - admin-web
 
   workflow_dispatch:
 
