@@ -2,15 +2,15 @@ name: CI
 
 on:
   push:
-    tags:
-      - admin-web
-    
+    paths:
+      - 'admin-web/**'
+
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: macos-latest
-    
+
     strategy:
       matrix:
         node-version: [14.x]
@@ -30,6 +30,6 @@ jobs:
           key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
-            
+
       - name: admin-web
         run: yarn && yarn build
