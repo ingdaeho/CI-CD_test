@@ -8,16 +8,39 @@ on:
   workflow_dispatch:
 
 jobs:
-  job_install_dependencies:
-    name: Install Dependencies
+  build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: Check out current commit (${{ github.sha }})
-        uses: actions/checkout@v2
 
-      - name: Set up Node
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - name: post message to slack channel
+        uses: slackapi/slack-github-action@v1.18.0
+        with:
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":traffic_light: [Staging] Admin-Web 빌드 시작"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
       - name: npm cache
         id: cache
@@ -28,16 +51,9 @@ jobs:
           restore-keys: |
             npm-packages-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install dependencies
-        if: steps.cache_dependencies.outputs.cache-hit != 'true'
-        run: yarn
-    outputs:
-      dependency_cache_key: ${{ steps.cache.outputs.hash }}
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm install
 
-  job_build:
-    name: build
-    needs: job_install_dependencies
-    runs-on: ubuntu-latest
-    steps:
-      - name: build admin-web
-        run: cd admin-web && yarn build
+      - name: admin-web
+        run: yarn build
