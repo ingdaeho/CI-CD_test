@@ -16,6 +16,25 @@ jobs:
         node-version: [14.x]
 
     steps:
+      - name: post message to slack channel
+        uses: slackapi/slack-github-action@v1.18.0
+        with:
+          payload: |
+            {
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":traffic_light: [Staging] Admin-Web 빌드 ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
       - uses: actions/checkout@v2
 
       - name: Use Node.js ${{ matrix.node-version }}
