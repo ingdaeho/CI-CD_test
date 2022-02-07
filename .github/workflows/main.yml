@@ -40,4 +40,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: build admin-web
-        run: yarn build
+        run: cd admin-web && yarn build
