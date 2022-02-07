@@ -24,13 +24,13 @@ jobs:
         uses: actions/cache@v2
         with:
           path: node_modules
-          key: npm-packages-${{ hashFiles('admin-web/package-lock.json') }}
+          key: npm-packages-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            npm-packages-${{ hashFiles('admin-web/package-lock.json') }}
+            npm-packages-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install dependencies
-        if: steps.cache_dependencies.outputs.cache-hit == ''
-        run: npm install
+        if: steps.cache_dependencies.outputs.cache-hit != 'true'
+        run: yarn
     outputs:
       dependency_cache_key: ${{ steps.cache.outputs.hash }}
 
@@ -40,4 +40,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: build admin-web
-        run: cd admin-web && yarn build
+        run: yarn build
