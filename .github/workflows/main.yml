@@ -26,7 +26,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": ":traffic_light: [Staging] Admin-Web 빌드 ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                    "text": ":traffic_light: [Staging] Admin-Web 빌드 시작"
                   }
                 }
               ]
@@ -45,10 +45,14 @@ jobs:
       - name: npm cache
         uses: actions/cache@v2
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
+          path: node_modules
+          key: npm-packages-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}
+            npm-packages-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Dependencies
+          if: steps.cache.outputs.cache-hit != 'true'
+          run: yarn
 
       - name: admin-web
-        run: yarn && yarn build
+        run: yarn build
