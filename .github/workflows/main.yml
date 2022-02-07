@@ -51,8 +51,8 @@ jobs:
             npm-packages-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install Dependencies
-          if: steps.cache.outputs.cache-hit != 'true'
-          run: yarn
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: yarn
 
       - name: admin-web
         run: yarn build
