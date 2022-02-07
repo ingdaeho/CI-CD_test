@@ -62,5 +62,27 @@ jobs:
       - name: admin-web
         run: yarn build
 
+  job_action_end:
+    runs-on: ubuntu-latest
+    steps:
+      - name: post message to slack channel
+        uses: slackapi/slack-github-action@v1.18.0
+        with:
+          payload: |
+            {
+              "text": ":traffic_light: [Staging] Admin-Web 빌드 ${{ job.status }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": ":traffic_light: [Staging] Admin-Web 빌드 ${{ job.status }}"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
 
